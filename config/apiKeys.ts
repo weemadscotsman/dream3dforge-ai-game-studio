@@ -22,6 +22,13 @@ export const OPENROUTER_API_KEY = getEnvKey('VITE_OPENROUTER_API_KEY');
 export const GEMINI_API_KEY = getEnvKey('VITE_GEMINI_API_KEY');
 export const KIMI_API_KEY = getEnvKey('VITE_KIMI_API_KEY');
 
+// Legacy compatibility
+export const HARDCODED_KEYS = {
+  openrouter: OPENROUTER_API_KEY,
+  gemini: GEMINI_API_KEY,
+  kimi: KIMI_API_KEY
+};
+
 // Validation
 export const hasValidKeys = (): boolean => {
   return !!(OPENROUTER_API_KEY || GEMINI_API_KEY || KIMI_API_KEY);

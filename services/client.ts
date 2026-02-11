@@ -10,7 +10,7 @@ export interface AIProvider {
   generateContent(config: any): Promise<{ text: string | undefined }>;
 }
 
-export type ProviderType = 'OPENROUTER' | 'GEMINI';
+export type ProviderType = 'OPENROUTER' | 'GEMINI' | 'KIMI';
 
 // --- OPENROUTER PROVIDER (Primary) ---
 class OpenRouterProvider implements AIProvider {
@@ -85,22 +85,90 @@ class GeminiProvider implements AIProvider {
   }
 }
 
+// --- KIMI PROVIDER ---
+class KimiProvider implements AIProvider {
+  private apiKey: string;
+  private baseUrl = "https://api.moonshot.cn/v1/chat/completions";
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+
+  async generateContent(config: any): Promise<{ text: string | undefined }> {
+    console.log("[KimiProvider] Processing request with 128k context...");
+
+    let userPrompt = "";
+    if (typeof config.contents === 'string') {
+        userPrompt = config.contents;
+    } else if (typeof config.contents === 'object') {
+        if (config.contents.parts) {
+             userPrompt = config.contents.parts
+                .filter((p: any) => p.text)
+                .map((p: any) => p.text)
+                .join("\n");
+        } else if (Array.isArray(config.contents)) {
+             userPrompt = JSON.stringify(config.contents);
+        }
+    }
+
+    let systemInstruction = "You are an expert game developer and software architect. Output clean, valid code.";
+    if (config.config?.systemInstruction) {
+        systemInstruction = config.config.systemInstruction;
+    }
+
+    try {
+        const response = await fetch(this.baseUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${this.apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "kimi-latest",
+                messages: [
+                    { role: "system", content: systemInstruction },
+                    { role: "user", content: userPrompt }
+                ],
+                temperature: config.config?.temperature ?? 0.3,
+                max_tokens: config.config?.maxOutputTokens ?? 4096
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Kimi API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return { text: data.choices?.[0]?.message?.content };
+    } catch (e: any) {
+        console.error("[KimiProvider] Request failed", e);
+        throw e;
+    }
+  }
+}
+
 // --- INITIALIZATION ---
 
-let activeProvider: AIProvider;
-let activeType: ProviderType = 'OPENROUTER'; // Default to OpenRouter
+import { KIMI_API_KEY } from "../config/apiKeys";
 
-// Initialize with OpenRouter
+let activeProvider: AIProvider;
+let activeType: ProviderType = 'OPENROUTER';
+
+// Initialize with best available provider
 if (OPENROUTER_API_KEY && OPENROUTER_API_KEY !== 'YOUR_OPENROUTER_KEY_HERE') {
     console.log("%c[System] Booting with OpenRouter API (Gemini 3 Flash)", "color: #0aff00; font-weight: bold;");
     activeProvider = new OpenRouterProvider(CODE_MODEL);
     activeType = 'OPENROUTER';
+} else if (KIMI_API_KEY) {
+    console.log("%c[System] Booting with Kimi AI (128k context)", "color: #ff6b00; font-weight: bold;");
+    activeProvider = new KimiProvider(KIMI_API_KEY);
+    activeType = 'KIMI';
 } else if (HARDCODED_GEMINI_KEY) {
-    console.warn("[System] OpenRouter key missing. Fallback to Google Gemini API");
+    console.warn("[System] OpenRouter/Kimi keys missing. Fallback to Google Gemini API");
     activeProvider = new GeminiProvider(HARDCODED_GEMINI_KEY);
     activeType = 'GEMINI';
 } else {
-    console.warn("[System] NO API KEYS FOUND.");
+    console.warn("[System] NO API KEYS FOUND. Please add keys to .env.local");
 }
 
 export const switchAIProvider = (type: ProviderType) => {
@@ -111,6 +179,10 @@ export const switchAIProvider = (type: ProviderType) => {
         }
         activeProvider = new OpenRouterProvider(CODE_MODEL);
         activeType = 'OPENROUTER';
+    } else if (type === 'KIMI') {
+        if (!KIMI_API_KEY) throw new Error("Kimi API Key not configured.");
+        activeProvider = new KimiProvider(KIMI_API_KEY);
+        activeType = 'KIMI';
     } else {
         if (!HARDCODED_GEMINI_KEY) throw new Error("Gemini API Key not configured.");
         activeProvider = new GeminiProvider(HARDCODED_GEMINI_KEY);
