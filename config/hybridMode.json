@@ -1,0 +1,20 @@
+{
+    "localModels": {
+        "always": [
+            "phi-3-mini",
+            "stable-diffusion-3"
+        ],
+        "optional": [
+            "qwen2.5-coder-32b",
+            "llama-3.2-11b"
+        ]
+    },
+    "cloudFallback": {
+        "enabled": true,
+        "providers": [
+            "huggingface",
+            "replicate"
+        ],
+        "costAlert": 5.00
+    }
+}

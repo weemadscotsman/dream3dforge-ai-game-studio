@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3"/>
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  
+  <!-- Shine overlay -->
+  <rect width="512" height="512" rx="96" fill="url(#shine)"/>
+  
+  <!-- 3D Cube icon -->
+  <g transform="translate(128, 100)">
+    <!-- Back face -->
+    <path d="M128 40 L240 100 L240 220 L128 280 L16 220 L16 100 Z" 
+          fill="#1e1b4b" opacity="0.5"/>
+    
+    <!-- Left face -->
+    <path d="M16 100 L128 160 L128 280 L16 220 Z" 
+          fill="#312e81"/>
+    
+    <!-- Right face -->
+    <path d="M240 100 L128 160 L128 280 L240 220 Z" 
+          fill="#4338ca"/>
+    
+    <!-- Top face -->
+    <path d="M128 40 L240 100 L128 160 L16 100 Z" 
+          fill="#6366f1"/>
+    
+    <!-- Highlight lines -->
+    <path d="M128 40 L128 160 M16 100 L128 160 L240 100" 
+          stroke="#a5b4fc" stroke-width="3" fill="none" opacity="0.5"/>
+  </g>
+  
+  <!-- "3D" text -->
+  <text x="256" y="420" 
+        font-family="Arial, sans-serif" 
+        font-size="72" 
+        font-weight="bold" 
+        fill="white" 
+        text-anchor="middle">
+    FORGE
+  </text>
+</svg>
