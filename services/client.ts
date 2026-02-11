@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { OPENROUTER_API_KEY, CODE_MODEL, makeOpenRouterRequest } from "../config/openRouterConfig";
-import { GEMINI_API_KEY } from "../config/apiKeys";
+import { GEMINI_API_KEY, KIMI_API_KEY } from "../config/apiKeys";
 
 // --- CONFIGURATION ---
 // Use hardcoded keys from config files
@@ -148,8 +148,6 @@ class KimiProvider implements AIProvider {
 }
 
 // --- INITIALIZATION ---
-
-import { KIMI_API_KEY } from "../config/apiKeys";
 
 let activeProvider: AIProvider;
 let activeType: ProviderType = 'OPENROUTER';
