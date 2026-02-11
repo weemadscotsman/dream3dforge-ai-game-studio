@@ -1,28 +1,31 @@
 /**
  * API Keys Configuration
  * 
- * HARDCODED MODE: All keys are embedded for seamless operation
+ * SECURE MODE: Keys loaded from environment variables
+ * Create a .env file in project root with your keys:
  * 
- * Providers:
- * - OpenRouter: Code generation (google/gemini-3-flash-preview:free)
- * - Gemini: Image generation (gemini-2.0-flash-exp-image-generation)
- * - Gemini: Video generation (veo-2.0-generate-preview)
+ * VITE_OPENROUTER_API_KEY=your_key_here
+ * VITE_GEMINI_API_KEY=your_key_here
+ * VITE_KIMI_API_KEY=your_key_here
  */
 
-// HARDCODED KEYS - Production Mode
-export const USE_HARDCODED_KEYS = true;
-
-// Legacy export for backward compatibility
-export const HARDCODED_KEYS = {
-  openrouter: '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',
-  gemini: 'AIzaSyCYvV1QVQ--fLOSlNRAQA9oqFoouuxgUhE'
+// Load from environment (Vite exposes env vars prefixed with VITE_)
+const getEnvKey = (key: string): string => {
+  // @ts-ignore - import.meta.env is Vite-specific
+  return import.meta.env?.[key] || '';
 };
 
-// OpenRouter Configuration
-export const OPENROUTER_API_KEY = HARDCODED_KEYS.openrouter;
+export const USE_HARDCODED_KEYS = false;
 
-// Gemini Configuration (for images & video)
-export const GEMINI_API_KEY = HARDCODED_KEYS.gemini;
+// API Keys from environment
+export const OPENROUTER_API_KEY = getEnvKey('VITE_OPENROUTER_API_KEY');
+export const GEMINI_API_KEY = getEnvKey('VITE_GEMINI_API_KEY');
+export const KIMI_API_KEY = getEnvKey('VITE_KIMI_API_KEY');
+
+// Validation
+export const hasValidKeys = (): boolean => {
+  return !!(OPENROUTER_API_KEY || GEMINI_API_KEY || KIMI_API_KEY);
+};
 
 // Model Configuration
 export const MODELS = {

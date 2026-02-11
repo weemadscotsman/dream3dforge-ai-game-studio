@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         // Kimi Code Integration
-        'process.env.KIMI_API_KEY': JSON.stringify("sk-kimi-6MdJ9jp64HeJOrsxg6KiV0IYy19tN7sl7o1SR1FH3FQnMAuQP3WdLp0dUcO7LwzG")
+        'process.env.KIMI_API_KEY': JSON.stringify(process.env.KIMI_API_KEY || '')
       },
       resolve: {
         alias: {

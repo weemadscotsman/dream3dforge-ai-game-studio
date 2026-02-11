@@ -1,12 +1,15 @@
 {
   "name": "dream3dforge",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "set NODE_ENV=development && electron electron/main.js",
+    "electron:build": "npm run build && electron-builder",
+    "electron:pack": "npm run build && electron-builder --dir"
   },
   "dependencies": {
     "@google/genai": "^1.38.0",
